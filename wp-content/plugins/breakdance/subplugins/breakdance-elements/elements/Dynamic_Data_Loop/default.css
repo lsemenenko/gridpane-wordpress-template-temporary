@@ -1,0 +1,17 @@
+.breakdance .bde-repeater-element {
+    max-width: 100%;
+    width: 100%;
+    text-align: left;
+}
+
+.breakdance .bde-dynamic-repeater {
+    display: grid;
+    gap: 20px;
+}
+
+.breakdance .bde-dynamic-repeater .bde-dynamic-repeater-item {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 20px;
+}

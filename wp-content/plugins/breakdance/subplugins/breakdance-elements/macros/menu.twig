@@ -1,0 +1,367 @@
+{% macro menuStart(options) %}
+  {% set style = options.removeColumnTitles ? 'no-titles' : 'collapse' %}
+  {% set customIcon = options.toggle.custom_icon %}
+
+<nav class="breakdance-menu breakdance-menu--{{ style }}">
+  <button class="breakdance-menu-toggle breakdance-menu-toggle--{{ options.toggle.animation|default('squeeze') }}" type="button">
+      {% if (customIcon.open_icon or (customIcon.open_icon and customIcon.close_icon)) %}
+        {% if customIcon.open_icon %}
+          <span class="breakdance-menu-toggle__custom-open-icon">
+            {{ customIcon.open_icon.svgCode }}
+          </span>
+        {% endif %}
+
+        {% if customIcon.close_icon %}
+          <span class="breakdance-menu-toggle__custom-close-icon">
+            {{ customIcon.close_icon.svgCode }}
+          </span>
+        {% endif %}
+      {% else %}
+        <span class="breakdance-menu-toggle-icon">
+          <span class="breakdance-menu-toggle-lines"></span>
+        </span>
+      {% endif %}
+  </button>
+  {% endmacro %}
+
+  {% macro menuEnd() %}
+</nav>
+{% endmacro %}
+
+{% macro menuTopbar(options) %}
+  {% set layout = options.layout %}
+
+  {% if options.mode and options.mode != 'default' and (layout.logo or not layout.close_button.disable) %}
+    <div class="breakdance-menu-topbar">
+      {% if layout.logo_url %}
+      <a class="breakdance-menu-topbar-logo" href="{{ layout.logo_url }}">
+        {% else %}
+        <span class="breakdance-menu-topbar-logo">
+      {% endif %}
+          {% if layout.logo %}
+            <img src="{{ layout.logo.url }}" alt="{{ layout.logo.alt }}" />
+          {% endif %}
+          {% if layout.logo_url %}
+      </a>
+    {% else %}
+      </span>
+      {% endif %}
+
+      {% if not layout.close_button.disable %}
+        <button class="breakdance-menu-close-button" type="button">Close</button>
+      {% endif %}
+    </div>
+  {% endif %}
+{% endmacro %}
+
+{% macro menuLink(link) %}
+  <a href="{{ link.url }}" class="breakdance-dropdown-link">
+    {% if link.icon_or_image and (link.icon.svgCode or link.image.url) %}
+      <span class="breakdance-dropdown-link__icon">
+        {% if link.icon_or_image == 'icon' %}
+          {{ link.icon.svgCode }}
+        {% elseif link.icon_or_image == 'image' %}
+          <img src="{{ link.image.url }}" width="30" alt="">
+        {% endif %}
+      </span>
+    {% endif %}
+
+    <span class="breakdance-dropdown-link__label">
+      {% if link.text %}
+        <span class="breakdance-dropdown-link__text">{{ link.text }}</span>
+      {% endif %}
+
+      {% if link.description %}
+        <span class="breakdance-dropdown-link__description">{{ link.description }}</span>
+      {% endif %}
+    </span>
+  </a>
+{% endmacro %}
+
+{% macro menuSection(columns, theme) %}
+  <div class="breakdance-dropdown-section breakdance-dropdown-section--{{ theme }}">
+    <div class="breakdance-dropdown-columns">
+      {% for column in columns %}
+        <div class="breakdance-dropdown-column {{ column.title ? 'breakdance-dropdown-column--collapsible' }}">
+          {% if column.title %}
+            <span class="breakdance-dropdown-column__title" role="heading" aria-level="3">{{ column.title }}</span>
+          {% endif %}
+
+          <div class="breakdance-dropdown-links">
+            {% for link in column.links %}
+              {{ _self.menuLink(link) }}
+            {% endfor %}
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+{% endmacro %}
+
+{% macro atomV1MenuCss(selector, styles, bp, isBaseBp, globalSettings, isWPMenu) %}
+  {% set desktop = styles.desktop_menu %}
+  {% set mobile = styles.mobile_menu %}
+  {% set desktopBreakpoint = 'breakpoint_base' %}
+  {% set mobileBreakpoint = styles.mobile_menu.show_at|default('breakpoint_tablet_landscape') %}
+  {% set breakpointWidth = get_breakpoint_max_width(mobileBreakpoint) %}
+  {% set radius = styles.desktop_menu.links.effect.radius %}
+  {% set parentSelector = selector ~ ' .breakdance-menu' %}
+
+  {% if isBaseBp and mobileBreakpoint != desktopBreakpoint %}
+    {% if mobileBreakpoint != 'never' %}
+      @media (min-width: {{ breakpointWidth + 1 }}px) {
+    {% endif %}
+      {{ parentSelector }} {
+        --menu-duration: {{ desktop.transition_duration.style }};
+
+        {# Link #}
+        --links-gap: {{ desktop.links.space_between.style }};
+        --link-color: {{ desktop.links.typography.color }};
+        --link-color-hover: {{ desktop.links.typography.color_hover }};
+        --link-effect-color: {{ desktop.links.effect.color }};
+        --link-effect-color-hover: {{ desktop.links.effect.color }}; {# On purpose #3083 #}
+        --link-effect-thickness: {{ desktop.links.effect.thickness.style }};
+        {{ _self.paddingToCssVar('link-padding', desktop.links.size.padding) }}
+        {{ _self.radiusToCssVar('link-effect-radius', desktop.links.effect.radius) }}
+
+        {# Link Arrow #}
+        --link-arrow-color: {{ desktop.links.dropdown_arrows.color }};
+        --link-arrow-color-hover: {{ desktop.links.dropdown_arrows.color_hover }};
+        --link-arrow-display: {{ desktop.links.dropdown_arrows.disable ? 'none' }};
+        --link-arrow-offset-y: {{ desktop.links.dropdown_arrows.offset.style }};
+        --link-arrow-close-rotation: {{ desktop.links.dropdown_arrows.closed_rotation.style }};
+        --link-arrow-open-rotation: {{ desktop.links.dropdown_arrows.open_rotation.style }};
+        --link-arrow-size: {{ desktop.links.dropdown_arrows.size.style }};
+        --link-arrow-gap: {{ desktop.links.dropdown_arrows.gap.style }};
+        {{ _self.iconToCssVar('arrow-icon', desktop.links.dropdown_arrows.custom_arrow) }}
+
+        {# Dropdown #}
+        --dropdown-animation-duration: {{ desktop.dropdowns.wrapper.transition_duration.style }};
+        --dropdown-caret-display: {{ desktop.dropdowns.wrapper.disable_caret ? 'none' }};
+        --dropdown-caret-radius: {{ desktop.dropdowns.wrapper.caret_radius.style }};
+        --dropdown-background-color: {{ desktop.dropdowns.wrapper.background }};
+        --dropdown-offset-y: {{ desktop.dropdowns.wrapper.offset.style }};
+
+        {# Dropdown Section #}
+        --dropdown-sections-stack: {{ desktop.dropdowns.additional_section.stack_horizontally ? 'row' }};
+        {{ _self.paddingToCssVar('dropdown-section-padding', desktop.dropdowns.wrapper.padding.padding) }}
+      }
+
+      {{ selector }} .breakdance-menu-link,
+      {{ selector }} .breakdance-menu-list > .breakdance-link {
+        {{ _self.typography(desktop.links.typography, globalSettings) }}
+      }
+
+      {{ selector }} .breakdance-menu-link:hover,
+      {{ selector }} .breakdance-menu-list > .breakdance-link:hover {
+        {{ _self.typographyWithHoverableColorAndEffects(desktop.links.typography, globalSettings) }}
+      }
+
+      /* Dropdown */
+      {{ selector }} .breakdance-dropdown-body {
+        {{ _self.borders(desktop.dropdowns.wrapper.borders) }}
+      }
+
+      {{ _self.atomV1MenuColumnCss(parentSelector, desktop.dropdowns.columns, globalSettings) }}
+      {{ _self.atomV1MenuDropdownLinkCss(parentSelector, desktop.dropdowns.links, globalSettings) }}
+      {{ _self.atomV1MenuAdditionalSectionCss(selector, desktop.dropdowns.additional_section, globalSettings) }}
+
+    {% if mobileBreakpoint != 'never' %}
+        }
+    {% endif %}
+  {% endif %}
+
+  {# Code that makes the menu responsive #}
+  {% if bp == mobileBreakpoint %}
+    {{ _self.atomV1MenuResponsiveCss(selector, mobile, globalSettings, isWPMenu) }}
+  {% endif %}
+{% endmacro %}
+
+{% macro atomV1MenuDropdownCss(selector, dropdown) %}
+  {{ selector }} .breakdance-dropdown {
+    --dropdown-background-color: {{ dropdown.wrapper.background }};
+    --dropdown-custom-width: {{ dropdown.wrapper.width.style }};
+    --dropdown-sections-stack: {{ dropdown.additional_section.stack_horizontally ? 'row' }};
+    {{ _self.paddingToCssVar('dropdown-section-padding', dropdown.wrapper.padding.padding) }}
+  }
+
+  {{ selector }} .breakdance-dropdown-body {
+    {{ _self.borders(dropdown.wrapper.borders) }}
+  }
+{% endmacro %}
+
+{% macro atomV1MenuAdditionalSectionCss(selector, additional, globalSettings) %}
+  /* Dropdown - Additional Section */
+  {% set className = selector ~ ' .breakdance-dropdown-section--additional' %}
+
+  {{ className }} {
+    --dropdown-section-dark-background: {{ additional.background }};
+    --dropdown-section-width: {{ additional.stack_horizontally ? additional.width.style }};
+    {{ _self.paddingToCssVar('dropdown-section-padding', additional.padding.padding) }}
+  }
+
+  {{ _self.atomV1MenuColumnCss(className, additional.columns, globalSettings) }}
+  {{ _self.atomV1MenuDropdownLinkCss(className, additional.links, globalSettings) }}
+{% endmacro %}
+
+{% macro atomV1MenuColumnCss(selector, column, globalSettings) %}
+  /* Dropdown Columns */
+
+  {{ selector }} {
+    --dropdown-columns-gap: {{ column.gap_between_columns.style }};
+    --dropdown-column-title-spacing: {{ column.space_after_title.style }};
+    --dropdown-columns-stack: {{ column.stack_vertically ? 'column' }};
+  }
+
+  {{ selector }} .breakdance-dropdown-column__title {
+    {{ _self.typography(column.title, globalSettings) }}
+  }
+{% endmacro %}
+
+{% macro atomV1MenuDropdownLinkCss(selector, link, globalSettings) %}
+  /* Dropdown Link */
+
+  {{ selector }} {
+    --dropdown-links-gap: {{ link.spacing.between_links.style }};
+    --dropdown-link-description-spacing: {{ link.spacing.before_description.style }};
+    --dropdown-link-img-opacity: {{ link.graphic.image_opacity }};
+    --dropdown-link-img-opacity-hover: {{ link.graphic.image_opacity_hover }};
+    --dropdown-link-background-color-hover: {{ link.hover_background }};
+    --dropdown-link-icon-spacing: {{ link.spacing.after_graphic.style }};
+    {{ _self.atomV1MenuDropdownLinkGraphicCss(link.graphic) }}
+  }
+
+  {{ selector }} .breakdance-dropdown-link {
+    {{ _self.spacing_padding_all(link.padding) }}
+    {{ _self.border_radius(link.radius) }}
+  }
+
+  {{ selector }} .breakdance-dropdown-link__text {
+    {{ _self.typography(link.title, globalSettings) }}
+  }
+
+  {{ selector }} .breakdance-dropdown-link__description {
+    {{ _self.typography(link.description, globalSettings) }}
+  }
+
+  {{ selector }} .breakdance-dropdown-link:hover .breakdance-dropdown-link__text {
+    {{ _self.typographyWithHoverableColorAndEffects(link.title, globalSettings) }}
+  }
+
+  {{ selector }} .breakdance-dropdown-link:hover .breakdance-dropdown-link__description {
+    {{ _self.typographyWithHoverableColorAndEffects(link.description, globalSettings) }}
+  }
+{% endmacro %}
+
+{% macro atomV1MenuDropdownLinkGraphicCss(graphic) %}
+  --dropdown-link-icon-color: {{ graphic.icon }};
+  --dropdown-link-icon-color-hover: {{ graphic.icon_hover }};
+  --dropdown-link-icon-size: {{ graphic.size.style }};
+  --dropdown-link-icon-alignment: {{ graphic.alignment }};
+  --dropdown-link-icon-x: {{ graphic.translate.x.style }};
+  --dropdown-link-icon-y: {{ graphic.translate.y.style }};
+  --dropdown-link-icon-background: {{ graphic.background }};
+  --dropdown-link-icon-background-hover: {{ graphic.background_hover }};
+
+  --dropdown-link-img-opacity: {{ graphic.image_opacity }};
+  --dropdown-link-img-opacity-hover: {{ graphic.image_opacity_hover }};
+
+  {{ _self.radiusToCssVar('dropdown-link-icon-radius', graphic.radius) }}
+  {{ _self.paddingToCssVar('dropdown-link-icon-padding', graphic.padding.padding) }}
+{% endmacro %}
+
+{% macro atomV1MenuResponsiveCss(selector, mobile, globalSettings, isWPMenu) %}
+  /* Awesome Menu: Responsive Styles */
+
+  {{ selector }} .breakdance-menu {
+    --menu-background: {{ mobile.background }};
+    --menu-duration: {{ mobile.transition_duration.style }};
+
+    {% if mobile.mode == 'fullscreen' or mobile.mode == 'offcanvas' %}
+      {# Don't align vertically center for the default mode. #}
+      --menu-alignment: {{ mobile.vertically_align_center ? 'center' }};
+    {% endif %}
+
+    {{ _self.paddingToCssVar('toggle-padding', mobile.toggle.wrapper_padding.padding) }}
+    --toggle-radius: {{ mobile.toggle.wrapper_radius.style }};
+    --toggle-background-color: {{ mobile.toggle.wrapper }};
+    --toggle-background-color-hover: {{ mobile.toggle.wrapper_hover }};
+    --toggle-active-background-color: {{ mobile.toggle.wrapper_open }};
+    --toggle-layer-width: {{ mobile.toggle.custom_icon.bar_width.style }};
+    --toggle-layer-height: {{ mobile.toggle.custom_icon.bar_height.style }};
+    --toggle-layer-spacing: {{ mobile.toggle.custom_icon.bar_spacing.style }};
+    --toggle-layer-color: {{ mobile.toggle.icon }};
+    --toggle-layer-color-active: {{ mobile.toggle.icon_open }};
+    --toggle-layer-color-hover: {{ mobile.toggle.icon_hover }};
+    --toggle-layer-border-radius: {{ mobile.toggle.custom_icon.bar_radius.style }};
+
+    --mobile-offcanvas-width: {{ mobile.offcanvas_width.style }};
+    --mobile-offcanvas-x: {{ mobile.offcanvas_position == 'right' ? '100%' }};
+
+    --mobile-topbar-padding: {{ mobile.top_bar.padding.style }};
+    --mobile-topbar-logo-width: {{ mobile.top_bar.logo_width.style }};
+    --mobile-topbar-logo-order: {{ mobile.top_bar.logo_on_right ? 2 }};
+    --mobile-topbar-close-button-size: {{ mobile.top_bar.close_button.size.style }};
+    --mobile-topbar-close-button-color: {{ mobile.top_bar.close_button.color }};
+    --mobile-topbar-close-button-color-hover: {{ mobile.top_bar.close_button.color_hover }};
+    --mobile-topbar-close-button-bar-height: {{ mobile.top_bar.close_button.bar_height.style }};
+
+    --links-gap: 0;
+    --link-color: {{ mobile.links.typography.level_1.color }};
+    --link-background-color: {{ mobile.links.background }};
+    --link-background-color-hover: {{ mobile.links.background_hover }};
+    --link-border-color: {{ mobile.links.border }};
+    --link-border: {{ mobile.links.no_border ? 'none' }};
+    --link-alignment: {{ mobile.links.horizontally_center_links ? 'center' }};
+
+    {{ _self.paddingToCssVar('mobile-link-padding', mobile.links.padding.level_1) }}
+    {{ _self.paddingToCssVar('mobile-link-level-2-padding', mobile.links.padding.level_2) }}
+    {{ _self.paddingToCssVar('mobile-link-level-3-padding', mobile.links.padding.level_3) }}
+
+    --link-arrow-color: {{ mobile.links.dropdown_arrows.color }};
+    --link-arrow-color-hover: {{ mobile.links.dropdown_arrows.color_hover }};
+    --link-arrow-display: {{ mobile.links.dropdown_arrows.disable ? 'none' }};
+    --link-arrow-offset-y: {{ mobile.links.dropdown_arrows.offset.style }};
+    --link-arrow-close-rotation: {{ mobile.links.dropdown_arrows.closed_rotation.style }};
+    --link-arrow-open-rotation: {{ mobile.links.dropdown_arrows.open_rotation.style }};
+    --link-arrow-size: {{ mobile.links.dropdown_arrows.size.style }};
+    --link-arrow-gap: {{ mobile.links.dropdown_arrows.gap.style }};
+    {{ _self.iconToCssVar('arrow-icon', mobile.links.dropdown_arrows.custom_arrow) }}
+  }
+
+  {{ selector }} .breakdance-menu-link,
+  {{ selector }} .breakdance-menu-list > .breakdance-link {
+    color: {{ mobile.links.typography.level_1.color }};
+    {{ _self.typographyProperties(mobile.links.typography.level_1.typography.customTypography) }}
+  }
+
+  {{ selector }} .breakdance-menu .breakdance-dropdown-column__title {
+    color: {{ mobile.links.typography.level_2.color }};
+    {{ _self.typographyProperties(mobile.links.typography.level_2.typography.customTypography) }}
+  }
+
+  {{ selector }} .breakdance-dropdown-link {
+    {% if isWPMenu %}
+      color: {{ mobile.links.typography.level_2.color }};
+      {{ _self.typographyProperties(mobile.links.typography.level_2.typography.customTypography) }}
+    {% else %}
+      color: {{ mobile.links.typography.level_3.color }};
+      {{ _self.typographyProperties(mobile.links.typography.level_3.typography.customTypography) }}
+    {% endif %}
+
+    {# Like Desktop #}
+    {% if mobile.links.dropdowns_like_desktop %}
+      --link-border: none;
+      --dropdown-link-icon-display: {{ mobile.links.dropdowns.hide_link_graphic ? 'none' : 'block' }};
+      --dropdown-link-description-display: {{ mobile.links.dropdowns.hide_link_description ? 'none' : 'block' }};
+    {% endif %}
+  }
+
+  {#
+  DO NOT EDIT.
+  This code is automatically generated from https://github.com/soflyy/awesomemenu
+  #}
+  {# am:starts #}
+    {{ selector }} .breakdance-menu{--dropdown-link-icon-display:none;--dropdown-link-description-display:none;--dropdown-links-gap:var(--gap-none)} {{ selector }} .breakdance-menu-list{align-items:stretch;background-color:var(--menu-background);display:none;flex-direction:column;left:var(--mobile-offset-x);max-height:var(--menu-max-height);overflow:hidden;overflow-x:hidden;overflow-y:auto;position:absolute;top:var(--mobile-offset-y,100%);width:100vw;z-index:100} {{ selector }} .breakdance-menu-list:not(.is-visible):not(.is-collapsing){height:0;pointer-events:none} {{ selector }} .breakdance-menu-list.is-collapsing{height:0;overflow:hidden;transition:var(--menu-duration) height ease-in-out} {{ selector }} .breakdance-menu--enabled .breakdance-menu-list{display:flex} {{ selector }} .breakdance-menu-list>.bde-button{border-top:var(--link-border);margin-left:0;padding:10px 15px} {{ selector }} .breakdance-menu-list>.bde-button .breakdance-link{width:100%} {{ selector }} .breakdance-menu-list>:last-child{border-bottom:var(--link-border)} {{ selector }} .breakdance-menu-list>.breakdance-link,{{ selector }} .breakdance-menu .breakdance-menu-link{border-top:var(--link-border);justify-content:var(--link-alignment);padding:var(--mobile-link-padding)} {{ selector }} .breakdance-dropdown--with-link{--link-arrow-display:inherit} {{ selector }} .breakdance-dropdown-floater{opacity:1;overflow:hidden;padding-top:0;position:static;transform:none} {{ selector }} .breakdance-dropdown-floater:not(.is-visible):not(.is-collapsing){height:0;pointer-events:none} {{ selector }} .breakdance-dropdown-floater.is-collapsing{height:0;overflow:hidden;transition:var(--menu-duration) height ease-in-out} {{ selector }} .breakdance-dropdown--open .breakdance-dropdown-floater{transform:none} {{ selector }} .breakdance-dropdown-caret{display:none} {{ selector }} .breakdance-dropdown-body{background-color:var(--link-background-color);border-radius:0;border-top:var(--link-border);box-shadow:none;flex-direction:column} {{ selector }} .breakdance-dropdown--custom .breakdance-dropdown-floater,{{ selector }} .breakdance-menu--custom-width .breakdance-dropdown-floater{width:auto} {{ selector }} .breakdance-menu--placement-left .breakdance-dropdown-floater{left:auto} {{ selector }} .breakdance-menu--placement-center .breakdance-dropdown-floater{left:auto;transform:none} {{ selector }} .breakdance-menu--placement-right .breakdance-dropdown-floater{right:auto} {{ selector }} .breakdance-dropdown-section{--dropdown-section-padding:0;--dropdown-section-gap:var(--gap-none)} {{ selector }} .breakdance-dropdown-section--additional{background-color:transparent;border-top:var(--link-border)} {{ selector }} .breakdance-dropdown-columns{--dropdown-columns-stack:column;--dropdown-columns-gap:var(--gap-none)} {{ selector }} .breakdance-dropdown-column{gap:var(--gap-none)} {{ selector }} .breakdance-dropdown-column+.breakdance-dropdown-column{border-top:var(--link-border)} {{ selector }} .breakdance-menu--collapse .breakdance-dropdown-column--collapsible{gap:var(--gap-none)} {{ selector }} .breakdance-menu--collapse .breakdance-dropdown-column--collapsible .breakdance-dropdown-link:first-child,{{ selector }} .breakdance-menu--collapse .breakdance-dropdown-column--collapsible:not(:first-child){border-top:var(--link-border)} {{ selector }} .breakdance-menu--collapse .breakdance-dropdown-column--collapsible .breakdance-dropdown-column__title{cursor:pointer} {{ selector }} .breakdance-menu--collapse .breakdance-dropdown-column--collapsible .breakdance-dropdown-links{overflow:hidden} {{ selector }} .breakdance-menu--collapse .breakdance-dropdown-column--collapsible .breakdance-dropdown-links:not(.is-visible):not(.is-collapsing){height:0;pointer-events:none} {{ selector }} .breakdance-menu--collapse .breakdance-dropdown-column--collapsible .breakdance-dropdown-links.is-collapsing{height:0;overflow:hidden;transition:var(--menu-duration) height ease-in-out} {{ selector }} .breakdance-dropdown-column__title{font-weight:500;justify-content:var(--link-alignment);padding:var(--mobile-link-level-2-padding);white-space:normal} {{ selector }} .breakdance-menu--collapse .breakdance-dropdown-column--collapsible .breakdance-dropdown-column__title:after{display:block} {{ selector }} .breakdance-menu .breakdance-dropdown-link{justify-content:var(--link-alignment);padding:var(--mobile-link-level-3-padding);white-space:normal} {{ selector }} .breakdance-menu .breakdance-dropdown-link+.breakdance-dropdown-link{border-top:var(--link-border)} {{ selector }} .breakdance-menu--no-titles .breakdance-dropdown-column__title{display:none} {{ selector }} .breakdance-menu-topbar{align-items:center;display:flex} {{ selector }} .breakdance-menu--offcanvas .breakdance-menu-list{bottom:0;height:100vh!important;left:0;max-height:none;max-width:100%;opacity:1;padding-top:var(--wp-admin--admin-bar--height,0);position:fixed;top:0;transform:translate3d(-100%,0,0);transition:var(--menu-duration) transform ease;width:var(--mobile-offcanvas-width);z-index:100} {{ selector }} .breakdance-menu--offcanvas-right .breakdance-menu-list{left:auto;right:0;transform:translate3d(100%,0,0)} {{ selector }} .breakdance-responsive-menu--open .breakdance-menu-list{transform:none} {{ selector }} .breakdance-menu--fullscreen .breakdance-menu-list{height:100vh!important;max-height:none!important;opacity:0;padding-top:var(--wp-admin--admin-bar--height,0);pointer-events:none;position:fixed;top:0;transition:var(--menu-duration) opacity ease} {{ selector }} .breakdance-responsive-menu--open .breakdance-menu-list{opacity:1;pointer-events:auto!important} {{ selector }} .breakdance-dropdown--wp .breakdance-dropdown-section{margin-bottom:-1px} {{ selector }} .breakdance-dropdown--wp .breakdance-dropdown-link{border-bottom:var(--link-border);padding:var(--mobile-link-level-2-padding)} {{ selector }} .breakdance-menu-toggle{display:flex} {{ selector }} .breakdance-menu--effect .breakdance-menu-link:before,{{ selector }} .breakdance-menu--effect .breakdance-menu-list>.breakdance-link:before{display:none} {{ selector }} .breakdance-menu--anim-fade .breakdance-dropdown-floater{opacity:1}
+  {# am:ends #}
+{% endmacro %}

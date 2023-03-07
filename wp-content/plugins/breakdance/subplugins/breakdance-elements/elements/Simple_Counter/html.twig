@@ -1,0 +1,10 @@
+<div class="bde-simple-counter__wrapper">
+  <h6 class="bde-simple-counter__number">
+    <span class="bde-simple-counter__prefix">{{ content.counter.prefix }}</span>
+    <span class="bde-simple-counter__digit js-digit"></span>
+    <span class="bde-simple-counter__suffix">{{ content.counter.suffix }}</span>
+  </h6>
+  {% if content.counter.title %}
+  	<div class="bde-simple-counter__title" {{ dataContentEditablePropertyPath('content.counter.title') }}>{{ content.counter.title }}</div>
+  {% endif %}
+</div>

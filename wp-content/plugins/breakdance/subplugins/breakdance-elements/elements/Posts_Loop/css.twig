@@ -1,0 +1,13 @@
+{{ macros.EssentialElements_PostsSharedCss('%%SELECTOR%%', design, globalSettings, isBaseBreakpoint, breakpoint, isBuilder) }}
+
+%%SELECTOR%% .ee-post {
+background-color: {{ design.post.background }};
+{{ macros.borders(design.post.borders) }}
+    {{ macros.spacing_padding_all(design.post.padding) }}
+}
+
+%%SELECTOR%% {
+background-color: {{ design.container.background }};
+{{ macros.borders(design.container.borders) }}
+    {{ macros.spacing_padding_all(design.container.padding) }}
+}

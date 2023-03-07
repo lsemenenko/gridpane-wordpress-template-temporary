@@ -1,0 +1,24 @@
+<input
+    class="breakdance-form-field__input"
+    {{ (field.advanced.id ? 'id="' ~ field.advanced.id ~ '"') }}
+    {{ (field.advanced.id ? 'aria-describedby="' ~ field.advanced.id ~ '"') }}
+    type="{{ field.type }}"
+    name="{{ field.name }}"
+    placeholder="{{ field.advanced.placeholder }}"
+    value="{{ field.advanced.value }}"
+    {% if field.advanced.conditional %}
+      data-conditional-field-id="{{ field.advanced.condition.field.advanced.id }}"
+      {% if field.advanced.condition.value is iterable %}
+        data-conditional-value="{{ field.advanced.condition.value | join(',') }}"
+      {% else %}
+        data-conditional-value="{{ field.advanced.condition.value }}"
+      {% endif %}
+      data-conditional-operand="{{ field.advanced.condition.operand ?? 'equals' }}"
+    {% endif %}
+    {{ (field.max ? 'max="' ~ field.max ~ '"') }}
+    {{ (field.min ? 'min="' ~ field.min ~ '"') }}
+    {{ (field.step ? 'step="' ~ field.step ~ '"') }}
+    {{ field.advanced.required ? 'required' }}
+    {{ field.advanced.autocomplete_disabled ? 'autocomplete="off"' }}
+    {{ field.advanced.tabindex ? 'tabindex=' ~ field.advanced.tabindex }}
+>

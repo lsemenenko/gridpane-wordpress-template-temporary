@@ -1,0 +1,22 @@
+{% for option in field.options %}
+    <div class="breakdance-form-radio">
+        <input
+            type="radio"
+            name="{{ field.name }}{{ loop.length > 1 ? '[]' }}"
+            value="{{ option.value ?? option.label | escape }}"
+            id="{{ field.advanced.id }}-{{ loop.index }}"
+            {{ field.advanced.required ? 'required' }}
+            {{ option.selected ? 'checked' }}
+            {% if field.advanced.conditional %}
+              data-conditional-field-id="{{ field.advanced.condition.field.advanced.id }}"
+              {% if field.advanced.condition.value is iterable %}
+                data-conditional-value="{{ field.advanced.condition.value | join(',') }}"
+              {% else %}
+                data-conditional-value="{{ field.advanced.condition.value }}"
+              {% endif %}
+              data-conditional-operand="{{ field.advanced.condition.operand ?? 'equals' }}"
+            {% endif %}
+        >
+        <label class="breakdance-form-radio__text" for="{{ field.advanced.id }}-{{ loop.index }}">{{ option.label }}</label>
+    </div>
+{% endfor %}

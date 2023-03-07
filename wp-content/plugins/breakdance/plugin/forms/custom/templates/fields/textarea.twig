@@ -1,0 +1,22 @@
+<textarea
+    class="breakdance-form-field__input"
+    id="{{ field.advanced.id }}"
+    aria-describedby="{{ field.advanced.id }}"
+    type="{{ field.type }}"
+    name="{{ field.name }}"
+    {% if field.rows_textarea %}
+    rows="{{ field.rows_textarea }}"
+    {% endif %}
+    placeholder="{{ field.advanced.placeholder }}"
+    {{ field.advanced.required ? 'required' : '' }}
+    {% if field.advanced.conditional %}
+      data-conditional-field-id="{{ field.advanced.condition.field.advanced.id }}"
+      {% if field.advanced.condition.value is iterable %}
+        data-conditional-value="{{ field.advanced.condition.value | join(',') }}"
+      {% else %}
+        data-conditional-value="{{ field.advanced.condition.value }}"
+      {% endif %}
+      data-conditional-operand="{{ field.advanced.condition.operand ?? 'equals' }}"
+    {% endif %}
+>{{ field.advanced.value }}
+</textarea>

@@ -1,0 +1,65 @@
+.breakdance .bde-header-builder {
+  position: relative; /* i copied and pasted this from the section element... but what's the point of it? */
+  width: 100%;
+  background-color: var(--bde-background-color);
+  --sticky-header-animation-duration: var(--bde-transition-duration);
+}
+
+.breakdance .bde-header-builder .bde-header-builder__container {
+  gap: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0 auto;
+  max-width: var(--bde-section-width);
+  padding: var(--bde-section-horizontal-padding)
+    var(--bde-section-horizontal-padding);
+}
+
+.breakdance
+  .bde-header-builder.bde-header-builder--overlay:not(.bde-header-builder--sticky) {
+  position: absolute;
+  z-index: 2; /* https://github.com/soflyy/breakdance/issues/4366 */
+}
+
+.breakdance .bde-header-builder.bde-header-builder--sticky {
+  position: fixed;
+  z-index: 100;
+  top: var(--wp-admin--admin-bar--height, 0px);
+  transition-property: transform, opacity, background-color, box-shadow;
+  transition-duration: var(--sticky-header-animation-duration);
+  transition-timing-function: ease-in-out;
+}
+
+.breakdance
+  .bde-header-builder.bde-header-builder--sticky
+  .bde-header-builder__container {
+  transition-property: min-height;
+  transition-duration: var(--sticky-header-animation-duration);
+  transition-timing-function: ease-in-out;
+}
+
+.breakdance .bde-header-builder .bde-header-builder__header-builder-border-top,
+.breakdance
+  .bde-header-builder
+  .bde-header-builder__header-builder-border-bottom {
+  transition-property: height, background-color;
+  transition-duration: var(--sticky-header-animation-duration);
+  transition-timing-function: ease-in-out;
+}
+
+.bde-header-builder--sticky-scroll-hide {
+  box-shadow: none !important;
+}
+
+.bde-header-builder--sticky-scroll-start-off-hidden {
+  transition-duration: 0s !important;
+}
+
+.bde-header-builder--sticky-scroll-hide.bde-header-builder--sticky-scroll-slide {
+  transform: translateY(calc(-100% - var(--wp-admin--admin-bar--height, 0px)));
+}
+
+.bde-header-builder--sticky-scroll-hide.bde-header-builder--sticky-scroll-fade {
+  opacity: 0;
+}

@@ -1,0 +1,18 @@
+<div class="breakdance-dropdown {{ design.wrapper.width ? 'breakdance-dropdown--custom' }} {{ content.content.link ? 'breakdance-dropdown--with-link' }}">
+    {% set tag = content.content.link ? 'a' : 'button' %}
+    <{{ tag }} class="breakdance-menu-link" aria-haspopup="true"
+    aria-expanded="false" {{ content.content.link ? 'href="'~ content.content.link ~ '"' }}{{ dataContentEditablePropertyPath('content.content.text') }}
+    >
+    {{ content.content.text }}
+</{{ tag }}>
+
+<div class="breakdance-dropdown-floater" aria-hidden="true">
+    <div class="breakdance-dropdown-body">
+        {{ macros.menuSection(content.content.columns) }}
+
+        {% if content.content.show_another_section %}
+        {{ macros.menuSection(content.content.columns_2, 'additional') }}
+      {% endif %}
+    </div>
+  </div>
+</div>

@@ -1,0 +1,47 @@
+{# Background #}
+{% macro backgroundColor(color) %}
+  {% if color.value is defined %}
+    background: {{ color.value }};
+  {% else %}
+    background-color: {{ color }};
+  {% endif %}
+{% endmacro %}
+
+{# Text #}
+{% macro textColor(color) %}
+  {% if color.value is defined %}
+    background: {{ color.value }};
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-fill-color: transparent;
+  {% else %}
+    color: {{ color }};
+  {% endif %}
+{% endmacro %}
+
+{# Border #}
+
+{% macro borderColor(color) %}
+  {% if color.value is defined %}
+    border-image: {{ color.value }};
+    border-image-slice: 1;
+  {% else %}
+    border-color: {{ color }};
+  {% endif %}
+{% endmacro %}
+
+{# SVG #}
+
+{% macro svgColor(color, id = 'color') %}
+    {% set url = 'url(#' ~ id ~ ')' %}
+    {% set fill = color.type == 'radial' or color.type == 'linear' ? url : color %}
+
+    {{ fill }}
+{% endmacro %}
+
+{% macro svgGradient(color, id = 'color') %}
+  {% if (color.svgValue) %}
+    {{ color.svgValue|replace({'%%GRADIENTID%%': id}) }}
+  {% endif %}
+{% endmacro %}

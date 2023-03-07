@@ -1,0 +1,16 @@
+{% set options = {
+  removeColumnTitles: design.mobile_menu.links.remove_column_titles,
+  toggle: design.mobile_menu.toggle
+} %}
+
+{% set topbarOptions = {
+  mode: design.mobile_menu.mode,
+  layout: design.mobile_menu.top_bar
+} %}
+
+{{ macros.menuStart(options) }}
+  <div class="breakdance-menu-list">
+    {{ macros.menuTopbar(topbarOptions) }}
+    %%SSR%%
+  </div>
+{{ macros.menuEnd() }}

@@ -1,0 +1,92 @@
+%%SELECTOR%% {
+  width: {{ design.container.width.style }};
+  background-color: {{ design.container.background }};
+  {{ macros.borders(design.container.borders) }}
+  {{ macros.spacing_padding_all(design.container.padding) }}
+
+
+
+  {% if design.reviews.stars.color %}
+  --bde-woo-ratings__filled-star-svg: url('data:image/svg+xml;utf8,<svg width="24px" height="24px" fill="%23{{ design.reviews.stars.color | trim('#') }}" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><polygon id="Path" points="12 0.587 15.668 8.155 24 9.306 17.936 15.134 19.416 23.413 12 19.446 4.583 23.413 6.064 15.134 0 9.306 8.332 8.155"></polygon></svg>');
+  --bde-woo-ratings__empty-star-svg: url('data:image/svg+xml;utf8,<svg width="24px" height="24px" fill="%23{{ design.reviews.stars.color | trim('#') }}" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M12,5.173 L14.335,9.99 L19.64,10.722 L15.779,14.432 L16.721,19.702 L12,17.178 L7.279,19.703 L8.221,14.433 L4.36,10.723 L9.665,9.99 L12,5.173 L12,5.173 Z M12,0.587 L8.332,8.155 L0,9.306 L6.064,15.134 L4.584,23.413 L12,19.446 L19.416,23.412 L17.936,15.133 L24,9.306 L15.668,8.156 L12,0.587 Z" id="Shape"></path></svg>');
+  {% endif %}
+  {% if design.reviews.stars.size.style %}
+  --bde-woo-ratings__star_size: {{ design.reviews.stars.size.style }};
+  {% endif %}
+}
+
+/* Reviews / Stars */
+%%SELECTOR%% .comment_container img.avatar {
+  width: {{ design.reviews.avatar.size.style }};
+  height: {{ design.reviews.avatar.size.style }};
+  border-radius: {{ design.reviews.avatar.radius.style }};
+}
+
+/* Reviews / Separator */
+{% if design.reviews.separator.disable %}
+%%SELECTOR%%.bde-product-reviews .commentlist .review {
+  border: none;
+}
+{% endif %}
+%%SELECTOR%%.bde-product-reviews .commentlist .review {
+  border-color: {{ design.reviews.separator.color }};
+  border-width: {{ design.reviews.separator.width.style }};
+}
+
+
+/* Typography */
+{% if design.typography.hide_heading %}
+%%SELECTOR%% #comments h2 {
+  display: none;
+}
+{% endif %}
+%%SELECTOR%% #comments h2,
+%%SELECTOR%% #comments h2 * {
+  {{ macros.typography(design.typography.heading, globalSettings)  }}
+}
+%%SELECTOR%% .meta strong {
+  {{ macros.typography(design.typography.username, globalSettings)  }}
+}
+%%SELECTOR%% .meta *:not(strong) {
+  {{ macros.typography(design.typography.meta, globalSettings)  }}
+}
+%%SELECTOR%% .comment-text .description p {
+  {{ macros.typography(design.typography.review, globalSettings)  }}
+}
+%%SELECTOR%% .comment-reply-title {
+  {{ macros.typography(design.typography.form_heading, globalSettings)  }}
+}
+
+/* Spacing */
+%%SELECTOR%% {
+{{ macros.spacing_margin_y(design.spacing.container) }}
+}
+%%SELECTOR%% .commentlist > li:not(:first-child) {
+  padding-top: {{ design.spacing.reviews.around_review.style }};
+}
+%%SELECTOR%% .commentlist > li:not(:last-child) {
+  padding-bottom: {{ design.spacing.reviews.around_review.style }};
+}
+
+%%SELECTOR%% .comment_container {
+  gap:  {{ design.spacing.reviews.after_avatar.style }};
+}
+%%SELECTOR%% .star-rating {
+  margin-bottom: {{ design.spacing.reviews.after_stars.style }};
+}
+%%SELECTOR%% .comment_container p.meta {
+  margin-bottom: {{ design.spacing.reviews.after_meta.style }};
+}
+%%SELECTOR%% #comments ol.commentlist {
+  margin-top: {{ design.spacing.after_title.style }};
+}
+
+%%SELECTOR%% #reviews #comments {
+  margin-bottom: {{ design.spacing.after_reviews.style }};
+}
+%%SELECTOR%% #respond .comment-reply-title {
+  margin-bottom: {{ design.spacing.after_form_heading.style }};
+}
+
+/* Advanced / Override Global Styles */
+{{ macros.wooGlobalStyler(design.advanced.override_global_styles, '%%SELECTOR%%', breakpoint, globalSettings) }}

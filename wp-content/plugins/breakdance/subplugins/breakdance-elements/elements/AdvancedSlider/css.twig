@@ -1,0 +1,28 @@
+%%SELECTOR%% { 
+  max-width: {{ design.container.width.style }};
+  --custom-height: {{ design.container.custom_height.style }};
+  {{ macros.spacing_margin_y(design.spacing) }}
+}
+
+%%SELECTOR%% .advanced-slider__slide {
+  {% if design.container.height == 'viewport' %}
+   height: 100vh;
+  {% elseif design.container.height == 'custom' and design.container.custom_height.style %}
+    height: var(--custom-height);
+  {% endif %}
+}
+
+%%SELECTOR%% { 
+  max-width: {{ design.container.width.style }};
+  {{ macros.spacing_margin_y(design.spacing) }}
+}
+
+%%SELECTOR%% .advanced-slider__slide {
+   {% if design.container.height == 'viewport' %}
+   height: 100vh;
+  {% elseif design.container.height == 'custom' %}
+    height: {{ design.container.custom_height.style }};
+  {% endif %}
+}
+
+{{ macros.AtomV1SwiperCss(design.slider, '%%SELECTOR%%', globalSettings, isBaseBreakpoint) }}
