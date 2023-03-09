@@ -4,6 +4,7 @@
 # - Runs before files have been deployed
 # - Runs as root user
 # - Runs from within site /.gpconfig dir
+env
 
 timeout 300 wget https://getcomposer.org/download/2.5.4/composer.phar
 timeout 300 chmod 755 ../wp-content/plugins/breakdance/plugin/vendor/bin/mozart
