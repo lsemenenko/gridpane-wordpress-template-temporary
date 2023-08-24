@@ -33,9 +33,3 @@ fi
 if [[ -z $GIT_SITE_BUILD && $GP_GIT_SITE == *"example.com" ]]; then
   echo "This will fire for example.com and all example.com subdomains."
 fi
-
-if [[ -z $GIT_SITE_BUILD ]]; then
-  echo "This will fire only when a new site is NOT being added."
-  # This will disable maintenance mode for the site currently running the pre/post deploy script.
-  gpgit $GP_GIT_SITE site -maintenance disable
-fi
