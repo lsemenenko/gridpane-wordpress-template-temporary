@@ -20,12 +20,6 @@ if [[ -n $GIT_SITE_BUILD ]]; then
   echo "This will fire only when a new site is being added."
 fi
 
-if [[ -z $GIT_SITE_BUILD ]]; then
-  echo "This will fire only when a new site is NOT being added."
-  # This will enable maintenance mode for the site currently running the pre/post deploy script.
-  gp git site "$GP_GIT_SITE" -maintenance enable
-fi
-
 if [[ -z $GIT_SITE_BUILD && $GP_GIT_SITE == "example.com" ]]; then
   echo "This will only fire for the specific site example.com."
 fi
