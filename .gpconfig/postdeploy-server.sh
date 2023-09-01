@@ -5,7 +5,7 @@
 # - Runs as root
 # - Runs from within site /.gpconfig dir
 
-if [[ -z $GIT_SITE_BUILD ]]; then
+if [[ -z $GP_GIT_SITE_BUILD ]]; then
   echo "This will fire only when a new site is NOT being added."
   # This will disable maintenance mode for all sites on the server.
   gpgit server -maintenance disable

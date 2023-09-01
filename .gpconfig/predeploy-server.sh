@@ -18,21 +18,21 @@ timeout 300 php composer.phar update -n --working-dir=$GP_GIT_RELEASE_PATH/wp-co
 timeout 300 php composer.phar install -n --working-dir=$GP_GIT_RELEASE_PATH/wp-content/plugins/breakdance/plugin/
 
 
-if [[ -n $GIT_SITE_BUILD ]]; then
+if [[ -n $GP_GIT_SITE_BUILD ]]; then
   echo "This will fire only when a new site is being added."
 fi
 
-if [[ -z $GIT_SITE_BUILD ]]; then
+if [[ -z $GP_GIT_SITE_BUILD ]]; then
   echo "This will fire only when a new site is NOT being added."
   # This will enable maintenance mode for all sites on the server.
   gp git server -maintenance enable
 fi
 
-if [[ -z $GIT_SITE_BUILD && $GP_GIT_SITE == "example.com" ]]; then
+if [[ -z $GP_GIT_SITE_BUILD && $GP_GIT_SITE == "example.com" ]]; then
   echo "This will only fire for the specific site example.com."
 fi
 
-if [[ -z $GIT_SITE_BUILD && $GP_GIT_SITE == *"example.com" ]]; then
+if [[ -z $GP_GIT_SITE_BUILD && $GP_GIT_SITE == *"example.com" ]]; then
   echo "This will fire for example.com and all example.com subdomains."
 fi
 

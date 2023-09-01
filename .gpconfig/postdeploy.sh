@@ -16,14 +16,14 @@ if [[ -n $GP_GIT_SITE_PREVIOUS_POSTDEPLOY_FAILURE ]]; then
   echo "This will fire only when the site has failed post-deployment on the last run."
 fi
 
-if [[ -n $GIT_SITE_BUILD ]]; then
+if [[ -n $GP_GIT_SITE_BUILD ]]; then
   echo "This will fire only when a new site is being added."
 fi
 
-if [[ -z $GIT_SITE_BUILD && $GP_GIT_SITE == "example.com" ]]; then
+if [[ -z $GP_GIT_SITE_BUILD && $GP_GIT_SITE == "example.com" ]]; then
   echo "This will only fire for the specific site example.com."
 fi
 
-if [[ -z $GIT_SITE_BUILD && $GP_GIT_SITE == *"example.com" ]]; then
+if [[ -z $GP_GIT_SITE_BUILD && $GP_GIT_SITE == *"example.com" ]]; then
   echo "This will fire for example.com and all example.com subdomains."
 fi
